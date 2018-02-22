@@ -8,12 +8,19 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.squareup.picasso.Picasso
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), DogViewModel {
     private val DOG_URL = "DOG_URL"
 
-    private val dogInteractor: DogInteractor by lazy { DogInteractor() }
-    private val dogPresenter: DogPresenter by lazy { DogPresenter(this, dogInteractor) }
+    private val component: MainComponent by lazy {
+        DaggerMainComponent.builder()
+                .mainModule(MainModule(this))
+                .dogAppComponent(DogApp.getApp(this).component)
+                .build()
+    }
+
+    @Inject lateinit var dogPresenter: DogPresenter
 
     @BindView(R.id.dog_imageview)
     lateinit var dogImageView: ImageView
@@ -23,7 +30,10 @@ class MainActivity : AppCompatActivity(), DogViewModel {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         ButterKnife.bind(this)
+        component.inject(this)
+
         if (savedInstanceState == null) dogPresenter.requestAnotherDog()
         else {
             val url = savedInstanceState.getString(DOG_URL, "")
