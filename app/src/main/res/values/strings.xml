@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">DogApp</string>
+    <string name="daily_dog_goodness">Get your daily dog goodness</string>
+    <string name="another_one">Another one!!</string>
+    <string name="something_went_wrong">Oops... something went wrong. Please try again!</string>
 </resources>
